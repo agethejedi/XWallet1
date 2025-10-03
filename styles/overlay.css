@@ -1,0 +1,11 @@
+:root { --neon:#00F5FF; --bg:#0b0f14; --text:#EAF6FF; --muted:#9fb3c8; }
+#riskx-overlay { all: initial; position: fixed; z-index: 2147483647; inset: 0; display: none; align-items: center; justify-content: center;
+  font-family: Inter, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background: radial-gradient(60% 60% at 50% 40%, rgba(0,245,255,0.08), rgba(0,0,0,0)); }
+#riskx-overlay.active { display: flex; }
+#riskx-panel { width:min(820px,96vw); background:#0d131a; color:var(--text); border:1px solid rgba(0,245,255,0.35); border-radius:18px; padding:20px; }
+#riskx-header { display:flex; justify-content:space-between; align-items:center; }
+#riskx-riskbar { height:10px; border-radius:6px; margin:10px 0 14px 0; background:linear-gradient(90deg,#35c759,#f5a524,#ff453a); position:relative; }
+#riskx-riskbar .dot { position:absolute; top:-4px; width:18px; height:18px; border-radius:50%; background:var(--neon); box-shadow:0 0 10px var(--neon); }
+.riskx-btn { padding: 10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:#0e151c; color:var(--text); cursor:pointer; }
+.riskx-btn.primary { border-color: var(--neon); background: var(--neon); color:#001417; font-weight:800; }
+.riskx-meta { color: var(--muted); font-size:12px; }

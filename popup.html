@@ -1,0 +1,105 @@
+
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>X‑Wallet</title><style>
+:root { --neon:#00F5FF; --bg:#0b0f14; --panel:#121923; --text:#EAF6FF; --muted:#8ea7bf; }
+body{margin:0;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.wrap{width:396px;padding:16px}.title{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:0.4px}.x{color:var(--neon);font-size:22px;font-weight:900}
+.tabs{display:flex;gap:8px;margin-top:12px}.tab{flex:1;text-align:center;padding:10px;border:1px solid rgba(255,255,255,0.08);border-radius:10px;background:#0e151c;cursor:pointer}
+.tab.active{border-color:var(--neon);box-shadow:0 0 0 1px var(--neon) inset;color:#001417;background:var(--neon);font-weight:800}
+.card{background:var(--panel);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px;margin-top:12px}.muted{color:var(--muted);font-size:12px}
+.btn{padding:10px 12px;border-radius:12px;background:#0e151c;border:1px solid rgba(255,255,255,0.08);color:var(--text);text-align:center;cursor:pointer}
+.btn.primary{border-color:var(--neon);color:#001417;background:var(--neon);font-weight:800}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;background:#0e151c;color:var(--text);border:1px solid rgba(255,255,255,0.08)}
+.row{display:flex;gap:10px}.col{flex:1}.addr{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:#bfefff}
+.list-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.06)}
+.kv{display:flex;justify-content:space-between;gap:12px}
+</style></head><body>
+<div class="wrap">
+  <div class="title"><span class="x">X</span> X‑Wallet <span class="muted">by RiskXLabs</span></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="subs">Subscription</div>
+    <div class="tab" data-tab="safesend">SafeSend</div>
+    <div class="tab" data-tab="about">About</div>
+  </div>
+
+  <div class="card" id="subs">
+    <div class="kv"><div><b>Choose chain</b></div>
+      <select id="chain"><option value="ethereum">Ethereum</option><option value="polygon">Polygon</option><option value="solana">Solana</option><option value="bitcoin">Bitcoin</option></select></div>
+    <div id="evm" style="margin-top:8px">
+      <div class="muted">EVM subscription uses on-chain contract. Token: <select id="evmToken"><option value="native">Native</option><option value="usdc">USDC</option></select></div>
+      <div id="evmStatus" style="margin-top:6px"></div>
+      <div id="evmPrice" class="muted" style="margin-top:6px"></div>
+      <div class="row" style="margin-top:8px">
+        <div class="col"><input id="evmMonths" type="number" min="1" value="1"/></div>
+        <div class="col"><div class="btn primary" id="evmPrep">Prepare Tx</div></div>
+      </div>
+      <div id="evmTx" class="muted" style="margin-top:8px"></div>
+    </div>
+
+    <div id="sol" style="margin-top:8px; display:none">
+      <div class="muted">Send SOL or USDC(SPL) to the treasury; paste your tx signature to verify.</div>
+      <div class="row" style="margin-top:8px"><div class="col"><input id="solSig" placeholder="Tx signature"/></div><div class="col"><div class="btn" id="solVerify">Verify Payment</div></div></div>
+      <div id="solOut" class="muted" style="margin-top:8px"></div>
+    </div>
+
+    <div id="btc" style="margin-top:8px; display:none">
+      <div class="muted">Pay with Bitcoin on-chain.</div>
+      <div class="row" style="margin-top:8px">
+        <div class="col"><input id="btcAddr" placeholder="Treasury BTC address"/></div>
+        <div class="col"><input id="btcAmt" placeholder="Amount BTC" /></div>
+      </div>
+      <div class="row" style="margin-top:8px"><div class="col"><div class="btn" id="btcUri">Generate BIP21 URI</div></div><div class="col"><input id="btcTxid" placeholder="Your txid to check"/></div></div>
+      <div class="row" style="margin-top:8px"><div class="col"><div class="btn" id="btcCheck">Check Tx</div></div></div>
+      <div id="btcOut" class="muted" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <div class="card" id="safesend" style="display:none">
+    <div class="muted">SafeSend™ demo</div>
+    <div class="btn primary" id="safesendDemo">Open Demo Report</div>
+  </div>
+
+  <div class="card" id="about" style="display:none">
+    <div>X‑Wallet v3.1 — Multi-chain subscriptions (ETH, Polygon, Solana, Bitcoin) with privacy-preserving flow.</div>
+    <div class="muted" style="margin-top:6px">Configure backend URL in settings below.</div>
+  </div>
+
+  <div class="card">
+    <div class="muted">Backend URL</div>
+    <input id="subUrl" placeholder="http://localhost:8788" />
+    <div style="height:8px"></div><div class="btn" id="saveCfg">Save</div>
+  </div>
+</div>
+<script>
+const $=(q)=>document.querySelector(q);
+document.querySelectorAll('.tab').forEach(el=>el.onclick=()=>{ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); ['subs','safesend','about'].forEach(id=>$('#'+id).style.display='none'); $('#'+el.dataset.tab).style.display='block'; });
+
+// chain toggles
+$('#chain').onchange=()=>{ const c=$('#chain').value; $('#evm').style.display= (c==='ethereum'||c==='polygon') ? 'block':'none'; $('#sol').style.display=(c==='solana')?'block':'none'; $('#btc').style.display=(c==='bitcoin')?'block':'none'; if(c==='ethereum'||c==='polygon') refreshEvm(); };
+
+async function refreshEvm(){ const chain=$('#chain').value; if(!(chain==='ethereum'||chain==='polygon')) return;
+  const data=await chrome.storage.local.get({active:0, wallets:[]}); const w=data.wallets[data.active]; if(!w){ $('#evmStatus').textContent='No active wallet in this demo.'; return; }
+  chrome.runtime.sendMessage({type:'CHECK_EVM_SUB', chain, address:w.address, tier:1}, (resp)=>{ if(!resp||resp.error){ $('#evmStatus').textContent='Inactive or backend error.'; } else { const expires=resp.expiresAt? new Date(resp.expiresAt*1000).toLocaleString() : '—'; $('#evmStatus').innerHTML=(resp.active?'✅ Active':'❌ Inactive')+' — expires: '+expires; }});
+  chrome.runtime.sendMessage({type:'GET_EVM_TIER', chain, tier:1}, (resp)=>{ if(resp && !resp.error) $('#evmPrice').textContent='Monthly price (raw units): '+resp.monthlyPrice; });
+}
+document.getElementById('evmPrep').onclick=()=>{ const months=Math.max(1, parseInt($('#evmMonths').value||'1',10)); const token=$('#evmToken').value;
+  if(token==='native'){ const selector='0x5cbea67e'; const tier='0x'+(1).toString(16).padStart(64,'0'); const m='0x'+months.toString(16).padStart(64,'0'); const dataHex=selector + tier.slice(2) + m.slice(2); $('#evmTx').innerHTML='<div>Function:</div><div class="addr">subscribeNative(1,'+months+')</div><div>Calldata:</div><div class="addr">'+dataHex+'</div>'; }
+  else { $('#evmTx').innerHTML='Use ERC-20: approve(contract, price*months) then call subscribeToken(1,'+months+')'; }
+};
+
+// solana
+document.getElementById('solVerify').onclick=()=>{ const signature=$('#solSig').value.trim(); if(!signature) return $('#solOut').textContent='Enter signature.';
+  chrome.runtime.sendMessage({type:'VERIFY_SOL', payload:{signature}}, (resp)=>{ $('#solOut').textContent = resp && resp.ok ? '✅ Payment found (basic check).' : ('❌ Not verified: ' + (resp?.error||'unknown')); }); };
+
+// bitcoin
+document.getElementById('btcUri').onclick=()=>{ const addr=$('#btcAddr').value.trim(); const amt=$('#btcAmt').value.trim(); if(!addr||!amt) return $('#btcOut').textContent='Enter address and amount.';
+  const uri = 'bitcoin:'+addr+'?amount='+encodeURIComponent(amt)+'&label='+encodeURIComponent('XWallet%20Premium'); $('#btcOut').innerHTML='<div>BIP21 URI:</div><div class="addr">'+uri+'</div>'; };
+document.getElementById('btcCheck').onclick=()=>{ const txid=$('#btcTxid').value.trim(); if(!txid) return $('#btcOut').textContent='Enter txid.';
+  chrome.runtime.sendMessage({type:'BTC_TX', txid}, (resp)=>{ $('#btcOut').textContent = resp && !resp.error ? ('Status: '+JSON.stringify(resp.status)) : ('Error: '+(resp?.error||'unknown')); }); };
+
+document.getElementById('safesendDemo').onclick=()=>{ chrome.tabs.query({active:true,currentWindow:true}, (tabs)=> chrome.tabs.sendMessage(tabs[0].id, {type:'RXL:OPEN_DEMO', chainId:'0x1'})); };
+document.getElementById('saveCfg').onclick=async()=>{ const sub=$('#subUrl').value.trim()||'http://localhost:8788'; await chrome.storage.sync.set({subUrl:sub}); alert('Saved.'); };
+(async()=>{ const cfg=await chrome.storage.sync.get({subUrl:'http://localhost:8788'}); $('#subUrl').value=cfg.subUrl; })();
+$('#chain').dispatchEvent(new Event('change'));
+</script></body></html>

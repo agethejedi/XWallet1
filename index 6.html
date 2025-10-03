@@ -1,0 +1,55 @@
+
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>X‑Wallet by RiskXLabs — Safer crypto, private by default</title>
+<style>
+:root { --neon:#00F5FF; --bg:#0b0f14; --panel:#121923; --text:#EAF6FF; --muted:#9fb3c8; }
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.container{max-width:1040px;margin:0 auto;padding:24px}
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center}
+h1{font-size:42px;line-height:1.1;margin:0 0 12px 0} p{color:var(--muted);font-size:16px}
+.card{background:var(--panel);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:18px}
+.btn{display:inline-block;padding:12px 16px;border-radius:12px;background:var(--neon);color:#001417;font-weight:800;text-decoration:none}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+.label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px}
+input,select{width:100%;padding:10px;border-radius:10px;background:#0e151c;color:var(--text);border:1px solid rgba(255,255,255,0.08)}
+footer{margin-top:40px;color:var(--muted);font-size:12px;text-align:center}
+kbd{padding:2px 6px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;background:#0e151c}
+</style></head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <div>
+        <h1>X‑Wallet by RiskXLabs</h1>
+        <p>We fight fraud. SafeSend™ risk scoring, wallet‑to‑wallet messaging, and private crypto subscriptions — now multi‑chain.</p>
+        <div style="display:flex;gap:12px;margin-top:18px;">
+          <a class="btn" href="#" id="install">Install Extension</a>
+          <a class="btn" href="#signup">Start Free Trial</a>
+        </div>
+        <p style="margin-top:10px">No KYC. No PII. Just your wallet.</p>
+      </div>
+      <div class="card">
+        <div class="label">Start signup</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><div class="label">Chain</div><select id="chain"><option>Ethereum</option><option>Polygon</option><option>Solana</option><option>Bitcoin</option></select></div>
+          <div><div class="label">Plan</div><select id="plan"><option>Premium</option><option>Pro</option></select></div>
+        </div>
+        <div style="height:10px"></div>
+        <a class="btn" id="continue">Continue in extension</a>
+        <p style="margin-top:8px;font-size:12px" class="muted">Don’t have the extension? Click <kbd>Install Extension</kbd> first.</p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card"><div class="label">SafeSend™</div><b>Real risk analysis</b><p>See risk factors before you sign. We block scams you’d never spot.</p></div>
+      <div class="card"><div class="label">Messaging</div><b>E2EE wallet DMs</b><p>Chat + send encrypted docs wallet‑to‑wallet. No phone number.</p></div>
+      <div class="card"><div class="label">Subscriptions</div><b>Crypto‑only</b><p>Pay with ETH, MATIC, USDC, SOL or BTC. Anonymous by design.</p></div>
+    </div>
+
+    <footer>© RiskXLabs. Privacy-first software. v3.1</footer>
+  </div>
+<script>
+document.getElementById('install').onclick = (e)=>{ e.preventDefault(); alert('Publish to the Chrome Web Store and replace this link. For dev: load unpacked in chrome://extensions'); };
+document.getElementById('continue').onclick = (e)=>{ e.preventDefault(); alert('This button can deep-link to the extension via chrome-extension:// or instruct the user to open the popup and choose Subscription.'); };
+</script>
+</body></html>

@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "X\u2011Wallet by RiskXLabs (v3.1)",
+  "description": "SafeSend\u2122 + multi-wallet + Multi-chain subscription UI (demo).",
+  "version": "3.1.0",
+  "action": {
+    "default_title": "X\u2011Wallet",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "css": [
+        "styles/overlay.css"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/injected.js",
+        "styles/overlay.css",
+        "assets/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
